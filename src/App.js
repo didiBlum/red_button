@@ -299,7 +299,7 @@ function getRandomCategory(categories) {
 }
 
 function App() {
-  const [lang, setLang] = useState('en');
+  const [lang, setLang] = useState('he');
   const [showTask, setShowTask] = useState(false);
   const [activity, setActivity] = useState(null);
   const [timer, setTimer] = useState(0);
