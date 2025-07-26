@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import './App.css';
+import copy from 'copy-to-clipboard';
 
 // Activities in both languages, paired by index
 const activitiesEn = [
@@ -321,6 +322,9 @@ function App() {
   const installBtnRef = useRef();
   // Add state for multi-input tasks
   const [multiInputs, setMultiInputs] = useState([]);
+  // Add state for showing WhatsApp suggestion
+  const [showWhatsApp, setShowWhatsApp] = useState(false);
+  const [showCongrats, setShowCongrats] = useState(false);
 
   const t = translations[lang];
 
@@ -378,6 +382,7 @@ function App() {
     setTimerActive(true);
   };
 
+  // In handleBack, show the congrats screen instead of going directly to home
   const handleBack = () => {
     setShowTask(false);
     setActivity(null);
@@ -386,6 +391,7 @@ function App() {
     setStarted(false);
     setSelectedCategory(null);
     setShowCategories(false);
+    setShowCongrats(true);
   };
 
   const handleMoreTime = () => {
@@ -444,6 +450,41 @@ function App() {
       setMultiInputs([]);
     }
   }, [activity]);
+
+  // After timer is up and all write fields are filled, show WhatsApp suggestion
+  useEffect(() => {
+    if (
+      timer === 0 &&
+      ((activity && ((lang === 'en' && activity.label && activity.label.startsWith('Write')) || (lang === 'he' && activity.label && activity.label.startsWith('כתוב'))))) &&
+      (
+        (multiInputs.length > 1
+          ? multiInputs.every(val => val.trim().length >= 2)
+          : selftalkInputValid)
+      )
+    ) {
+      setShowWhatsApp(true);
+    } else {
+      setShowWhatsApp(false);
+    }
+  }, [timer, activity, lang, multiInputs, selftalkInputValid]);
+
+  // WhatsApp send handler
+  const handleSendWhatsApp = () => {
+    let text = '';
+    if (multiInputs.length > 1) {
+      text = multiInputs.filter(val => val.trim()).join('\n');
+    } else {
+      text = selftalkInput;
+    }
+    copy(text);
+    // WhatsApp URL
+    const encoded = encodeURIComponent(text);
+    const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+    const waUrl = isMobile
+      ? `https://wa.me/?text=${encoded}`
+      : `https://web.whatsapp.com/send?text=${encoded}`;
+    window.open(waUrl, '_blank');
+  };
 
   return (
     <div className={`App gradient-bg${lang === 'he' ? ' rtl' : ''}`}>
@@ -629,8 +670,30 @@ function App() {
                     )}
                   </>
                 )}
+                {showWhatsApp && (
+                  <button
+                    className="whatsapp-btn"
+                    onClick={handleSendWhatsApp}
+                    style={{marginTop: 12}}
+                  >
+                    {lang === 'he'
+                      ? 'שלח לעצמך תזכורת ב-WhatsApp (הטקסט הועתק)' 
+                      : 'Send to yourself via WhatsApp'}
+                  </button>
+                )}
               </>
             )}
+          </div>
+        </div>
+      ) : null}
+      {showCongrats ? (
+        <div className="congrats-screen" onClick={() => setShowCongrats(false)}>
+          <div className="congrats-message" style={{fontFamily: `'Quicksand', 'Open Sans', 'Inter', Arial, sans-serif`}}>
+            <div>{lang === 'he' ? 'כל הכבוד!' : 'Good job!'}</div>
+            <div>{lang === 'he' ? 'קח/י נשימה אחרונה' : 'Take a final breath'}</div>
+            <div>{lang === 'he' ? 'תן/י לעצמך חיבוק חזק' : 'Give yourself a strong hug'}</div>
+            <div>{lang === 'he' ? 'הצלחת!' : 'You got it!'}</div>
+            <div style={{fontSize: '1rem', marginTop: '1.5rem', opacity: 0.7}}>{lang === 'he' ? 'הקלק/י כדי להמשיך' : 'Tap anywhere to continue'}</div>
           </div>
         </div>
       ) : null}

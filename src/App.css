@@ -387,6 +387,25 @@
   background: #cfdef3;
 }
 
+.whatsapp-btn {
+  margin-top: 1rem;
+  padding: 0.7rem 2rem;
+  border-radius: 2rem;
+  border: none;
+  background: linear-gradient(90deg, #25d366 0%, #e0eafc 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.12);
+  transition: background 0.3s;
+  font-weight: 500;
+  outline: none;
+  display: block;
+}
+.whatsapp-btn:active {
+  background: #25d366;
+}
+
 .rtl .centered-content,
 .rtl .activity-card,
 .rtl .categories-list {
@@ -398,6 +417,44 @@
 .rtl .calm-text,
 .rtl .category-prompt {
   text-align: center !important;
+}
+
+.congrats-screen {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 9999;
+  background: linear-gradient(135deg, #e0eafc 0%, #f5e6e8 100%, #cfdef3 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  animation: fadeIn 0.7s;
+}
+.congrats-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  font-family: 'Open Sans', 'Inter', Arial, sans-serif;
+  font-size: 2.2rem;
+  color: #3a3a3a;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  opacity: 0.97;
+  padding: 2.5rem 1.2rem;
+  border-radius: 2.5rem;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 2px 24px rgba(100, 100, 150, 0.08);
+}
+@media (max-width: 600px) {
+  .congrats-message {
+    font-size: 1.3rem;
+    padding: 1.2rem 0.5rem;
+    border-radius: 1.2rem;
+  }
 }
 
 @media (max-width: 600px) {
